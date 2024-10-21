@@ -1,11 +1,17 @@
 package com.swingy.app.Renderer;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import com.swingy.app.Map;
 import com.swingy.app.Position;
 
 public class ConsoleRenderer extends Renderer {
 	private int		_consoleSizeX;
 	private int		_consoleSizeY;
+	private String	_inputString;
 
 	private void refreshConsoleSize()
 	{
@@ -58,13 +64,14 @@ public class ConsoleRenderer extends Renderer {
 	public ConsoleRenderer(Map a_map) {
 		super(a_map);
 		refreshConsoleSize();
+		_inputString = "Enter command : ";
 	}
 
 	protected void renderMap() {
 		String mapRenderStr = "\u001b[2J";
 		Position playerPos = _map.getHero().getPosition();
-		int offY = (_consoleSizeY - 1) / 2;
-		int offX = _consoleSizeX / 2;
+		int offY = (_consoleSizeY - 1) / 2 - playerPos.x;
+		int offX = (_consoleSizeX) / 2 - playerPos.y;
 
 		for (int y = 0; y < _consoleSizeY - 1; y++) {
 			for (int x = 0; x < _consoleSizeX; x++) {
@@ -87,5 +94,49 @@ public class ConsoleRenderer extends Renderer {
 			mapRenderStr += '\n';
 		}
 		System.out.print(mapRenderStr);
+	}
+
+
+	public Input getInputAction()
+	{
+		System.out.print(_inputString);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+		try {
+			String input = reader.readLine();
+			String command = null;
+			String value = null;
+			if (input == null)
+				return Input.NONE;
+			int sep = input.indexOf(':');
+			if (sep == -1) {
+				command = input;
+				value = null;
+			} else {
+				command = input.substring(0, sep);
+				value = input.substring(sep + 1);
+			}
+			System.out.println("command : " + command);
+			System.out.println("value : " + value);
+			command = command.trim().toUpperCase();
+			if (value != null)
+				value = value.trim();
+			
+			switch (command)
+			{
+				case "W":
+					return (Input.UP);
+				case "A":
+					return (Input.LEFT);
+				case "S":
+					return (Input.DOWN);
+				case "D":
+					return (Input.RIGHT);
+				default:
+					return Input.NONE;
+			}
+		} catch (IOException e) {
+			return Input.NONE;
+		}
 	}
 }

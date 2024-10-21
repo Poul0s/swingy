@@ -8,6 +8,26 @@ import com.swingy.app.Renderer.Renderer;
 public class Game {
 	private static Renderer _renderer = null;
 
+	public static void HandleInput(Renderer.Input input, Hero hero)
+	{
+		// switch with current menu
+		switch (input)
+		{
+			case UP:
+				hero.getPosition().x--;
+				break;
+			case DOWN:
+				hero.getPosition().x++;
+				break;
+			case LEFT:
+				hero.getPosition().y--;
+				break;
+			case RIGHT:
+				hero.getPosition().y++;
+				break;
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 
 		if (args.length != 1 || !(args[0].equals("console") || args[0].equals("gui")))
@@ -24,7 +44,10 @@ public class Game {
 		if (args[0].equals("gui"))
 			throw new Exception("Unimplemented render");
 
-
-		_renderer.render();
+		while (true)
+		{
+			_renderer.render();
+			_renderer.getInputAction();
+		}
 	}
 }

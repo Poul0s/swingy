@@ -11,7 +11,7 @@ import com.swingy.app.Position;
 public class ConsoleRenderer extends Renderer {
 	private int		_consoleSizeX;
 	private int		_consoleSizeY;
-	private String	_inputString;
+	private String	_inputError;
 
 	private void refreshConsoleSize()
 	{
@@ -64,7 +64,7 @@ public class ConsoleRenderer extends Renderer {
 	public ConsoleRenderer(Map a_map) {
 		super(a_map);
 		refreshConsoleSize();
-		_inputString = "Enter command : ";
+		_inputError = "";
 	}
 
 	protected void renderMap() {
@@ -96,10 +96,10 @@ public class ConsoleRenderer extends Renderer {
 		System.out.print(mapRenderStr);
 	}
 
-
 	public Input getInputAction()
 	{
-		System.out.print(_inputString);
+		System.out.printf("Enter command %s: ", _inputError);
+		_inputError = "";
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 		try {
@@ -133,9 +133,11 @@ public class ConsoleRenderer extends Renderer {
 				case "D":
 					return (Input.RIGHT);
 				default:
+					_inputError = "(input not found) ";
 					return Input.NONE;
 			}
 		} catch (IOException e) {
+			_inputError = "(" + e.toString() + ") ";
 			return Input.NONE;
 		}
 	}

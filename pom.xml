@@ -13,20 +13,50 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.sourceEncoding>UTF-8</project.sourceEncoding>
     </properties>
+    
+    <dependencies>
+      <dependency>
+          <groupId>org.xerial</groupId>
+          <artifactId>sqlite-jdbc</artifactId>
+          <version>3.47.0.0</version>
+      </dependency>
+    </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                      <manifest>
-                        <addClasspath>true</addClasspath>
-                        <mainClass>com.swingy.app.Game</mainClass>
-                      </manifest>
-                    </archive>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <executions>
+              <execution>
+                  <id>copy-dependencies</id>
+                  <phase>prepare-package</phase>
+                  <goals>
+                      <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                      <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                      <overWriteReleases>false</overWriteReleases>
+                      <overWriteSnapshots>false</overWriteSnapshots>
+                      <overWriteIfNewer>true</overWriteIfNewer>
                   </configuration>
+              </execution>
+          </executions>
+      </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>lib/</classpathPrefix>
+                <mainClass>com.swingy.app.Game</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
             </plugin>
         </plugins>
     </build>

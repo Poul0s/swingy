@@ -1,12 +1,16 @@
 package com.swingy.app;
 
+import java.util.List;
+
+import com.swingy.app.DataLoader.DataLoader;
 import com.swingy.app.Heroes.Hero;
 import com.swingy.app.Heroes.Wretch;
 import com.swingy.app.Renderer.ConsoleRenderer;
 import com.swingy.app.Renderer.Renderer;
 
 public class Game {
-	private static Renderer _renderer = null;
+	private static Renderer 	_renderer = null;
+	private static List<Hero>	_heroes = null;
 
 	public static void HandleInput(Renderer.Input input, Hero hero)
 	{
@@ -29,12 +33,13 @@ public class Game {
 	}
 
 	public static void main(String[] args) throws Exception {
-
 		if (args.length != 1 || !(args[0].equals("console") || args[0].equals("gui")))
 		{
 			System.out.println("Usage: java -jar `App.jar` console|gui");
 			System.exit(1);
 		}
+
+		_heroes = DataLoader.loadData();
 
 		Hero hero = new Wretch("UNDEF_NAME");
 		Map map = new Map(hero);

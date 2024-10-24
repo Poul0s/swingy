@@ -31,7 +31,9 @@ public class DataLoader {
 				y INTEGER NOT NULL,
 				h INTEGER NOT NULL
 			);
-			
+		""");
+
+		statement.execute("""
 			CREATE TABLE IF NOT EXISTS artifacts (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				heroId INTEGER NOT NULL,
@@ -44,7 +46,7 @@ public class DataLoader {
 
 	private static void connectDb() throws SQLException
 	{
-		if (!DB_CONN.isValid(5))
+		if (DB_CONN != null && !DB_CONN.isValid(5))
 			DB_CONN = null;
 		if (DB_CONN == null)
 		{
@@ -82,7 +84,6 @@ public class DataLoader {
 					System.err.printf("An error occured while generating Artifact '%s' (%d): %s", query.getString("type"), query.getInt("id"), e.toString());
 			}
 		}
-		
 	}
 
 	public static List<Hero>	loadData() throws SQLException

@@ -1,49 +1,51 @@
 package com.swingy.app.Renderer;
 
+import java.util.ArrayList;
+
+import javax.swing.Popup;
+
 import com.swingy.app.Map;
 
 public abstract class Renderer {
-	enum Menu {
+	public enum Menu {
 		MAIN,
 		CREATE_CHAR,
 		CHOOSE_CHAR,
 		GAME,
 		OPTIONS
 	};
-	public enum Input {
-		NONE,
-		UP,
-		RIGHT,
-		DOWN,
-		LEFT
-	};
-
-	protected Menu	_menu;
-	protected Map	_map;
 
 
-	public Renderer(Map a_map)
+	protected Menu				_menu;
+	protected Map				_map;
+	protected ArrayList<String>	_popups;
+
+
+	public Renderer()
 	{
-		_map = a_map;
-		_menu = Menu.GAME;
+		_map = null;
+		_menu = Menu.MAIN;
+		_popups = new ArrayList<>();
 	}
 	public Renderer(Renderer renderer) {
 		_map = renderer._map;
 		_menu = renderer._menu;
+		_popups = renderer._popups;
 	}
 	
-	// protected abstract void	renderMain();
+	protected abstract void	renderMain();
 	// protected abstract void	renderCreateChar();
 	// protected abstract void	renderCharSelection();
 	protected abstract void	renderMap();
 	// protected abstract void	renderOptions();
-	public abstract Input	getInputAction(); // maybe return two arguments for input value if goto or enter text
+
+	public abstract Input	getInputAction();
 	
 	public void	render() {
 		switch (_menu) {
-			// case MAIN:
-			// 	renderMain();
-			// 	break;
+			case MAIN:
+				renderMain();
+				break;
 			// case CREATE_CHAR:
 			// 	renderCreateChar();
 			// 	break;
@@ -61,4 +63,12 @@ public abstract class Renderer {
 				throw new RuntimeException("Unknown menu");
 		}
 	};
+
+	public void	addPopup(String popup) {
+		_popups.add(popup);
+	}
+
+	public Menu	getMenu() {
+		return (_menu);
+	}
 }

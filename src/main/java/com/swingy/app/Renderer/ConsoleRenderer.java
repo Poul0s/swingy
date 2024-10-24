@@ -1,17 +1,20 @@
 package com.swingy.app.Renderer;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import com.swingy.app.Map;
 import com.swingy.app.Position;
+import com.swingy.app.Renderer.Page.MainPage;
+import com.swingy.app.Renderer.Page.Page;
+import com.swingy.app.Renderer.Page.Element.Element;
+import com.swingy.app.Renderer.Page.Element.TextButton;
 
 public class ConsoleRenderer extends Renderer {
 	private int		_consoleSizeX;
 	private int		_consoleSizeY;
-	private String	_inputError;
 
 	private void refreshConsoleSize()
 	{
@@ -61,10 +64,32 @@ public class ConsoleRenderer extends Renderer {
 		// }
 	// }
 
-	public ConsoleRenderer(Map a_map) {
-		super(a_map);
+	public ConsoleRenderer() {
+		super();
 		refreshConsoleSize();
-		_inputError = "";
+	}
+
+	private String renderElements(Element[]	elements) {
+		String	res = "";
+		for (Element elem : elements) {
+			int	screenX = (int) (elem.getX() * _consoleSizeX);
+			int	screenY = (int) (elem.getY() * (_consoleSizeY - 1));
+			res += "\u001b[" + screenY + ";" + screenX + "H"; // place cursor at element render position
+			// todo add colors and minWidth and minHeight for backgroundColor
+			if (elem instanceof TextButton)
+			res += "[" + elem.getId() + "] ";
+			res += elem.getText();
+		}
+		return (res);
+	}
+
+	protected void renderMain() {
+		String	renderStr = "\u001b[2J";
+		
+		renderStr += renderElements(MainPage.elements);
+		
+		renderStr += "\u001b[" + _consoleSizeY + ";0H";
+		System.out.print(renderStr);
 	}
 
 	protected void renderMap() {
@@ -98,8 +123,11 @@ public class ConsoleRenderer extends Renderer {
 
 	public Input getInputAction()
 	{
-		System.out.printf("Enter command %s: ", _inputError);
-		_inputError = "";
+		String inputError = "";
+		if (_popups.size() != 0) {
+			inputError = "(" + _popups.remove(0) + ") ";
+		}
+		System.out.printf("Enter command %s: ", inputError);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 		try {
@@ -107,7 +135,7 @@ public class ConsoleRenderer extends Renderer {
 			String command = null;
 			String value = null;
 			if (input == null)
-				return Input.NONE;
+				return new Input(Input.InputType.NONE, null);
 			int sep = input.indexOf(':');
 			if (sep == -1) {
 				command = input;
@@ -125,20 +153,25 @@ public class ConsoleRenderer extends Renderer {
 			switch (command)
 			{
 				case "W":
-					return (Input.UP);
+					return new Input(Input.InputType.UP, value);
 				case "A":
-					return (Input.LEFT);
+					return (new Input(Input.InputType.LEFT, value));
 				case "S":
-					return (Input.DOWN);
+					return (new Input(Input.InputType.DOWN, value));
 				case "D":
-					return (Input.RIGHT);
+					return (new Input(Input.InputType.RIGHT, value));
+				case "CLICK":
+					return (new Input(Input.InputType.CLICK, value));
+
+				case "":
+					return new Input(Input.InputType.NONE, value);
 				default:
-					_inputError = "(input not found) ";
-					return Input.NONE;
+					_popups.add(0, "input not found");
+					return new Input(Input.InputType.NONE, value);
 			}
 		} catch (IOException e) {
-			_inputError = "(" + e.toString() + ") ";
-			return Input.NONE;
+			_popups.add(0, e.toString());
+			return new Input(Input.InputType.NONE, null);
 		}
 	}
 }

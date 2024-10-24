@@ -18,10 +18,16 @@ public class Position {
 		heading = Direction.NORTH;
 	}
 
-	public Position(int a_x, int a_y, int a_z, Direction a_heading) {
-		a_x = 0;
-		a_y = 0;
-		a_heading = Direction.NORTH;
+	public Position(int a_x, int a_y) {
+		x = a_x;
+		y = a_y;
+		heading = Direction.NORTH;
+	}
+
+	public Position(int a_x, int a_y, Direction a_heading) {
+		x = a_x;
+		y = a_y;
+		heading = a_heading;
 	}
 
 	public Position(Position a_Position) {

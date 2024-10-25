@@ -113,8 +113,6 @@ public class ConsoleRenderer extends Renderer {
 			res += rgbToANSICode(elem.getTextColor(), false);
 			if (elem instanceof TextButton)
 				res += "• ";
-			if (elem instanceof TextButton || elem instanceof InputText || elem instanceof SelectButton)
-				res += "[" + i + "] ";
 			res += elem.getText();
 			if (elem instanceof SelectButton)
 				res += " : < " + ((SelectButton) elem).getCurrentElement() + " >";
@@ -169,18 +167,19 @@ public class ConsoleRenderer extends Renderer {
 		System.out.print(mapRenderStr);
 	}
 
-	private void handleControlInput() throws IOException
+	private void	handleControlInput() throws IOException
 	{
 		int c = RawConsoleInput.read(false);
-		_popups.add(0, "yes : " + String.valueOf(c));
-		
-		
 		if (c == '[') {
 			c = RawConsoleInput.read(false);
 			switch (c) {
 				case 68: //left
+					if (_page != null && _page.elements[_currentButtonId] instanceof SelectButton)
+						((SelectButton) _page.elements[_currentButtonId]).previous();
 					break;
 				case 67: //right
+					if (_page != null && _page.elements[_currentButtonId] instanceof SelectButton)
+						((SelectButton) _page.elements[_currentButtonId]).next();
 					break;
 				case 65: //up
 					_currentButtonId--;
@@ -194,6 +193,18 @@ public class ConsoleRenderer extends Renderer {
 					break;
 				}
 		}
+	}
+
+	public String inputLine(String input) throws IOException
+	{
+		RawConsoleInput.resetConsoleMode();
+		System.out.print(input);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String res = reader.readLine();
+		if (res == null)
+			return "";
+		else
+			return res;
 	}
 
 	public Input getInputAction()
@@ -210,7 +221,10 @@ public class ConsoleRenderer extends Renderer {
 			} else {
 				switch (c) {
 					case 10:
-						return new Input(Input.InputType.CLICK, _currentButtonId);
+						if (_page != null && _page.elements[_currentButtonId] instanceof InputText)
+							((InputText) _page.elements[_currentButtonId]).setInputText(inputLine("Enter new value : "));
+						else
+							return new Input(Input.InputType.CLICK, _currentButtonId);
 					default:
 						return new Input(Input.InputType.NONE, 0);
 				}
@@ -220,61 +234,5 @@ public class ConsoleRenderer extends Renderer {
 			_popups.add(0, e.toString());
 			return new Input(Input.InputType.NONE, 0);
 		}
-
-
-
-		// String inputError = "";
-		// if (_popups.size() != 0) {
-		// 	inputError = "(" + _popups.remove(0) + ") ";
-		// }
-		// System.out.printf("Enter command %s: ", inputError);
-
-		
-		// try {
-
-		// 	char c = (char) RawConsoleInput.read(true);
-		// 	System.out.printf("readed : %c    ", c);
-
-		// 	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		// 	String input = reader.readLine();
-		// 	String command = null;
-		// 	String value = null;
-		// 	if (input == null)
-		// 		return new Input(Input.InputType.NONE, null);
-		// 	int sep = input.indexOf(':');
-		// 	if (sep == -1) {
-		// 		command = input;
-		// 		value = null;
-		// 	} else {
-		// 		command = input.substring(0, sep);
-		// 		value = input.substring(sep + 1);
-		// 	}
-		// 	command = command.trim().toUpperCase();
-		// 	if (value != null)
-		// 		value = value.trim();
-			
-		// 	switch (command)
-		// 	{
-		// 		case "W":
-		// 			return new Input(Input.InputType.UP, value);
-		// 		case "A":
-		// 			return (new Input(Input.InputType.LEFT, value));
-		// 		case "S":
-		// 			return (new Input(Input.InputType.DOWN, value));
-		// 		case "D":
-		// 			return (new Input(Input.InputType.RIGHT, value));
-		// 		case "CLICK":
-		// 			return (new Input(Input.InputType.CLICK, value));
-
-		// 		case "":
-		// 			return new Input(Input.InputType.NONE, value);
-		// 		default:
-		// 			_popups.add(0, "input not found");
-		// 			return new Input(Input.InputType.NONE, value);
-		// 	}
-		// } catch (IOException e) {
-		// 	_popups.add(0, e.toString());
-		// 	return new Input(Input.InputType.NONE, null);
-		// }
 	}
 }

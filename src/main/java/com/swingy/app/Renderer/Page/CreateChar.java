@@ -49,26 +49,19 @@ public class CreateChar extends Page {
 	public void HandleInput(Input input, Renderer renderer)
 	{
 
-		// switch (input.getType())
-		// {
-		// 	case CLICK:
-		// 	{
-		// 		switch (input.getValue()) {
-		// 			case 0:
-		// 				renderer.setMenu(Renderer.Menu.CREATE_CHAR);
-		// 				break;
-		// 			case 1:
-		// 				renderer.setMenu(Renderer.Menu.CHOOSE_CHAR);
-		// 				break;
-		// 			case 2:
-		// 				renderer.setMenu(Renderer.Menu.OPTIONS);
-		// 				break;
-		// 			case 3:
-		// 				System.exit(0); // todo save char maybe ???
-		// 				break;
-		// 		}
-		// 		break;
-		// 	}
-		// }
+		switch (input.getType())
+		{
+			case CLICK:
+			{
+				switch (input.getValue()) {
+					case 4:
+						renderer.setMenu(Renderer.Menu.MAIN);
+						break;
+				}
+				break;
+			}
+			default:
+				break;
+		}
 	}
 }

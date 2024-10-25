@@ -20,6 +20,11 @@
           <artifactId>sqlite-jdbc</artifactId>
           <version>3.47.0.0</version>
       </dependency>
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>5.15.0</version>
+    </dependency>
     </dependencies>
 
     <build>

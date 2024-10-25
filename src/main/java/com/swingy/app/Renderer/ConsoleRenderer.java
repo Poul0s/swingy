@@ -4,17 +4,30 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import com.swingy.app.Map;
 import com.swingy.app.Position;
-import com.swingy.app.Renderer.Page.MainPage;
+import com.swingy.app.Renderer.Element.Element;
+import com.swingy.app.Renderer.Element.InputText;
+import com.swingy.app.Renderer.Element.SelectButton;
+import com.swingy.app.Renderer.Element.TextButton;
+import com.swingy.app.Renderer.Page.CreateChar;
+import com.swingy.app.Renderer.Page.Main;
 import com.swingy.app.Renderer.Page.Page;
-import com.swingy.app.Renderer.Page.Element.Element;
-import com.swingy.app.Renderer.Page.Element.TextButton;
+
+import main.java.com.swingy.app.RawConsoleInput;
 
 public class ConsoleRenderer extends Renderer {
 	private int		_consoleSizeX;
 	private int		_consoleSizeY;
+	private int		_currentButtonId;
+
+	private String	rgbToANSICode(int color[], Boolean background)
+	{
+		// todo add protecc for color len
+		return ("\u001b[" + (background ? "4" : 3) + "8;2;" + color[0] + ";" + color[1] + ";" + color[2] + "m");
+	}
 
 	private void refreshConsoleSize()
 	{
@@ -67,26 +80,61 @@ public class ConsoleRenderer extends Renderer {
 	public ConsoleRenderer() {
 		super();
 		refreshConsoleSize();
+		_currentButtonId = 0;
 	}
 
-	private String renderElements(Element[]	elements) {
-		String	res = "";
-		for (Element elem : elements) {
-			int	screenX = (int) (elem.getX() * _consoleSizeX);
-			int	screenY = (int) (elem.getY() * (_consoleSizeY - 1));
-			res += "\u001b[" + screenY + ";" + screenX + "H"; // place cursor at element render position
-			// todo add colors and minWidth and minHeight for backgroundColor
-			if (elem instanceof TextButton)
-			res += "[" + elem.getId() + "] ";
-			res += elem.getText();
-		}
+	private String fillTerminalColor(int color[])
+	{
+		// todo check size color
+		String res = "\u001b[H";
+		res += rgbToANSICode(color, true);
+		for (int i = 0; i < _consoleSizeY - 1; i++)
+			for (int j = 0; j < _consoleSizeX; j++)
+				res += ' ';
+		res += "\u001b[0m";
 		return (res);
 	}
 
-	protected void renderMain() {
+	private String renderElements(Element[]	elements, Page page) {
+		String	res = "";
+
+		for (int i = 0; i < elements.length; i++) {
+			Element elem = elements[i];
+
+			int	screenX = (int) (elem.getX() * _consoleSizeX);
+			int	screenY = (int) (elem.getY() * (_consoleSizeY - 1));
+			res += "\u001b[" + screenY + ";" + screenX + "H"; // place cursor at element render position
+			if (i == _currentButtonId)
+				res += rgbToANSICode(new int[] {120, 120, 120}, true); // todo custom color
+			else if (elem.getBackgroundColor() != null)
+				res += rgbToANSICode(elem.getBackgroundColor(), true);
+			else
+				res += rgbToANSICode(page.backgroundColor, true);
+			res += rgbToANSICode(elem.getTextColor(), false);
+			if (elem instanceof TextButton)
+				res += "• ";
+			if (elem instanceof TextButton || elem instanceof InputText || elem instanceof SelectButton)
+				res += "[" + i + "] ";
+			res += elem.getText();
+			if (elem instanceof SelectButton)
+				res += " : < " + ((SelectButton) elem).getCurrentElement() + " >";
+			if (elem instanceof InputText)
+				res += " : " + ((InputText) elem).getInputText();
+		}
+		res += "\u001b[0m";
+		return (res);
+	}
+
+	protected void pageChanged() {
+		_currentButtonId = 0;
+	}
+
+	protected void renderPage(Page page) {
 		String	renderStr = "\u001b[2J";
+
+		renderStr += fillTerminalColor(page.backgroundColor);
 		
-		renderStr += renderElements(MainPage.elements);
+		renderStr += renderElements(page.elements, page);
 		
 		renderStr += "\u001b[" + _consoleSizeY + ";0H";
 		System.out.print(renderStr);
@@ -121,57 +169,112 @@ public class ConsoleRenderer extends Renderer {
 		System.out.print(mapRenderStr);
 	}
 
+	private void handleControlInput() throws IOException
+	{
+		int c = RawConsoleInput.read(false);
+		_popups.add(0, "yes : " + String.valueOf(c));
+		
+		
+		if (c == '[') {
+			c = RawConsoleInput.read(false);
+			switch (c) {
+				case 68: //left
+					break;
+				case 67: //right
+					break;
+				case 65: //up
+					_currentButtonId--;
+					if (_currentButtonId == -1)
+						_currentButtonId = _page.elements.length - 1;
+					break;
+				case 66: //down
+					_currentButtonId++;
+					if (_currentButtonId >= _page.elements.length)
+						_currentButtonId = 0;
+					break;
+				}
+		}
+	}
+
 	public Input getInputAction()
 	{
-		String inputError = "";
-		if (_popups.size() != 0) {
-			inputError = "(" + _popups.remove(0) + ") ";
-		}
-		System.out.printf("Enter command %s: ", inputError);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		if (_popups.size() != 0)
+			System.out.print(_popups.remove(0));
 
 		try {
-			String input = reader.readLine();
-			String command = null;
-			String value = null;
-			if (input == null)
-				return new Input(Input.InputType.NONE, null);
-			int sep = input.indexOf(':');
-			if (sep == -1) {
-				command = input;
-				value = null;
-			} else {
-				command = input.substring(0, sep);
-				value = input.substring(sep + 1);
-			}
-			System.out.println("command : " + command);
-			System.out.println("value : " + value);
-			command = command.trim().toUpperCase();
-			if (value != null)
-				value = value.trim();
-			
-			switch (command)
-			{
-				case "W":
-					return new Input(Input.InputType.UP, value);
-				case "A":
-					return (new Input(Input.InputType.LEFT, value));
-				case "S":
-					return (new Input(Input.InputType.DOWN, value));
-				case "D":
-					return (new Input(Input.InputType.RIGHT, value));
-				case "CLICK":
-					return (new Input(Input.InputType.CLICK, value));
+			int c = RawConsoleInput.read(true);
 
-				case "":
-					return new Input(Input.InputType.NONE, value);
-				default:
-					_popups.add(0, "input not found");
-					return new Input(Input.InputType.NONE, value);
+			if (c == '\u001b') {
+				handleControlInput();
+				return new Input(Input.InputType.NONE, 0);
+			} else {
+				switch (c) {
+					case 10:
+						return new Input(Input.InputType.CLICK, _currentButtonId);
+					default:
+						return new Input(Input.InputType.NONE, 0);
+				}
+
 			}
 		} catch (IOException e) {
 			_popups.add(0, e.toString());
-			return new Input(Input.InputType.NONE, null);
+			return new Input(Input.InputType.NONE, 0);
 		}
+
+
+
+		// String inputError = "";
+		// if (_popups.size() != 0) {
+		// 	inputError = "(" + _popups.remove(0) + ") ";
+		// }
+		// System.out.printf("Enter command %s: ", inputError);
+
+		
+		// try {
+
+		// 	char c = (char) RawConsoleInput.read(true);
+		// 	System.out.printf("readed : %c    ", c);
+
+		// 	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		// 	String input = reader.readLine();
+		// 	String command = null;
+		// 	String value = null;
+		// 	if (input == null)
+		// 		return new Input(Input.InputType.NONE, null);
+		// 	int sep = input.indexOf(':');
+		// 	if (sep == -1) {
+		// 		command = input;
+		// 		value = null;
+		// 	} else {
+		// 		command = input.substring(0, sep);
+		// 		value = input.substring(sep + 1);
+		// 	}
+		// 	command = command.trim().toUpperCase();
+		// 	if (value != null)
+		// 		value = value.trim();
+			
+		// 	switch (command)
+		// 	{
+		// 		case "W":
+		// 			return new Input(Input.InputType.UP, value);
+		// 		case "A":
+		// 			return (new Input(Input.InputType.LEFT, value));
+		// 		case "S":
+		// 			return (new Input(Input.InputType.DOWN, value));
+		// 		case "D":
+		// 			return (new Input(Input.InputType.RIGHT, value));
+		// 		case "CLICK":
+		// 			return (new Input(Input.InputType.CLICK, value));
+
+		// 		case "":
+		// 			return new Input(Input.InputType.NONE, value);
+		// 		default:
+		// 			_popups.add(0, "input not found");
+		// 			return new Input(Input.InputType.NONE, value);
+		// 	}
+		// } catch (IOException e) {
+		// 	_popups.add(0, e.toString());
+		// 	return new Input(Input.InputType.NONE, null);
+		// }
 	}
 }

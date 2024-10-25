@@ -10,6 +10,7 @@ import com.swingy.app.Heroes.Wretch;
 import com.swingy.app.Renderer.ConsoleRenderer;
 import com.swingy.app.Renderer.Input;
 import com.swingy.app.Renderer.Renderer;
+import com.swingy.app.Renderer.Page.Main;
 
 public class Game {
 	private static Renderer 	_renderer = null;
@@ -17,66 +18,30 @@ public class Game {
 
 	public static void HandleInput(Input input, Hero hero) //maybe move to each page ???
 	{
-		// omg what did i done
-		switch (_renderer.getMenu()) {
-			case GAME:
+		if (_renderer.getMenu() == Renderer.Menu.GAME)
+		{
+			switch (input.getType())
 			{
-				switch (input.getType())
-				{
-					case UP:
-						hero.getPosition().x--;
-						break;
-					case DOWN:
-						hero.getPosition().x++;
-						break;
-					case LEFT:
-						hero.getPosition().y--;
-						break;
-					case RIGHT:
-						hero.getPosition().y++;
-						break;
-					// case back && exit && maybe save ???
-					default:
-						_renderer.addPopup("invalid input");
-						break;
-				}
-				break;
+				case UP:
+					hero.getPosition().x--;
+					break;
+				case DOWN:
+					hero.getPosition().x++;
+					break;
+				case LEFT:
+					hero.getPosition().y--;
+					break;
+				case RIGHT:
+					hero.getPosition().y++;
+					break;
+				// case back && exit && maybe save ???
+				default:
+					_renderer.addPopup("invalid input");
+					break;
 			}
-			case MAIN:
-			{
-				switch (input.getType())
-				{
-					case CLICK:
-					{
-						switch (input.getValue()) {
-							case "1":
-								_renderer.addPopup("menu currently in working");
-								break;
-							case "2":
-								_renderer.addPopup("menu currently in working");
-								break;
-							case "3":
-								_renderer.addPopup("menu currently in working");
-								break;
-							case "4":
-								_renderer.addPopup("menu currently in working");
-								break;
-							default:
-								_renderer.addPopup("invalid button");
-								break;
-						}
-						break;
-					}
-					default:
-						_renderer.addPopup("invalid input");
-						break;
-				}
-				break;
-			}
-			default:
-				_renderer.addPopup("what the fuck");
-				break;
 		}
+		else
+			_renderer.getPage().HandleInput(input, _renderer);
 	}
 
 	public static void main(String[] args) throws Exception {

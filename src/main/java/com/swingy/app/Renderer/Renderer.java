@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import javax.swing.Popup;
 
 import com.swingy.app.Map;
+import com.swingy.app.Renderer.Page.CreateChar;
+import com.swingy.app.Renderer.Page.Main;
+import com.swingy.app.Renderer.Page.Page;
 
 public abstract class Renderer {
 	public enum Menu {
@@ -17,6 +20,7 @@ public abstract class Renderer {
 
 
 	protected Menu				_menu;
+	protected Page				_page;
 	protected Map				_map;
 	protected ArrayList<String>	_popups;
 
@@ -25,40 +29,31 @@ public abstract class Renderer {
 	{
 		_map = null;
 		_menu = Menu.MAIN;
+		_page = new Main();
 		_popups = new ArrayList<>();
 	}
 	public Renderer(Renderer renderer) {
 		_map = renderer._map;
 		_menu = renderer._menu;
+		_page = renderer._page;
 		_popups = renderer._popups;
 	}
 	
-	protected abstract void	renderMain();
-	// protected abstract void	renderCreateChar();
-	// protected abstract void	renderCharSelection();
+	protected abstract void	renderPage(Page page);
 	protected abstract void	renderMap();
-	// protected abstract void	renderOptions();
+	protected abstract void pageChanged();
 
 	public abstract Input	getInputAction();
 	
 	public void	render() {
 		switch (_menu) {
 			case MAIN:
-				renderMain();
+			case CREATE_CHAR:
+				renderPage(_page);
 				break;
-			// case CREATE_CHAR:
-			// 	renderCreateChar();
-			// 	break;
-			// case CHOOSE_CHAR:
-			// 	renderCharSelection();
-			// 	break;
 			case GAME:
 				renderMap();
 				break;
-			// case OPTIONS:
-			// 	renderOptions();
-			// 	break;
-		
 			default:
 				throw new RuntimeException("Unknown menu");
 		}
@@ -70,5 +65,26 @@ public abstract class Renderer {
 
 	public Menu	getMenu() {
 		return (_menu);
+	}
+
+	public Page	getPage() {
+		return (_page);
+	}
+
+	public void	setMenu(Menu menu) {
+		_menu = menu;
+		switch (menu) {
+			case MAIN:
+				_page = new Main();
+				break;
+
+			case CREATE_CHAR:
+				_page = new CreateChar();
+				break;
+		
+			default:
+				_page = null;
+		}
+		pageChanged();
 	}
 }

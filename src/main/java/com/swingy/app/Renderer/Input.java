@@ -11,9 +11,9 @@ public class Input {
 	};
 
 	private InputType	_input;
-	private String		_value;
+	private int			_value;
 
-	public Input(InputType a_type, String a_value)
+	public Input(InputType a_type, int a_value)
 	{
 		_input = a_type;
 		_value = a_value;
@@ -24,7 +24,7 @@ public class Input {
 		return _input;
 	}
 
-	public String	getValue()
+	public int	getValue()
 	{
 		return _value;
 	}

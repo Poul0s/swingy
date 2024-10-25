@@ -1,8 +1,6 @@
-package com.swingy.app.Renderer.Page.Element;
+package com.swingy.app.Renderer.Element;
 
 import java.util.Map;
-
-import com.swingy.app.Position;
 
 public class Element {
 	protected float		_x;
@@ -13,7 +11,6 @@ public class Element {
 	protected int[]		_backgroundColor; // todo need rgb to ansi code for console render OR use default color
 	protected int		_minWidth;
 	protected int		_minHeight;
-	protected String	_id;
 
 	@SuppressWarnings("unchecked")
 	static <T> T getParm(Map<String, Object> map, String key, T defaultValue)
@@ -21,61 +18,47 @@ public class Element {
 		return (map != null && map.containsKey(key) ? (T) map.get(key) : defaultValue);
 	}
 
-	public Element(String a_id, Map<String, Object> parameters)
+	public Element(Map<String, Object> parameters)
 	{
 		_x = getParm(parameters, "x", 0.0f);
 		_y = getParm(parameters, "y", 0.0f);
 		_text = getParm(parameters, "text", "");
 		_fontSize = getParm(parameters, "fontSize", 14);
-		_textColor = getParm(parameters, "textColor", new int[]{255, 255, 255});
-		_backgroundColor = getParm(parameters, "backgroundColor", new int[]{0, 0, 0});
+		_textColor = getParm(parameters, "textColor", new int[] {255, 255, 255});
+		_backgroundColor = getParm(parameters, "backgroundColor", null);
 		_minWidth = getParm(parameters, "minWidth", 0);
 		_minHeight = getParm(parameters, "minHeight", 14);
-		_id = a_id;
 	}
 
-	public float	getX()
-	{
+	public float	getX() {
 		return (_x);
 	}
 
-	public float	getY()
-	{
+	public float	getY() {
 		return (_y);
 	}
 
-	public String	getText()
-	{
+	public String	getText() {
 		return (_text);
 	}
 
-	public int		getFontSize()
-	{
+	public int	getFontSize() {
 		return (_fontSize);
 	}
 
-	public int[]		getTextColor()
-	{
+	public int[]	getTextColor() {
 		return (_textColor);
 	}
 
-	public int[]		getBackgroundColor()
-	{
+	public int[]	getBackgroundColor() {
 		return (_backgroundColor);
 	}
 
-	public int		getMinWidth()
-	{
+	public int	getMinWidth() {
 		return (_minWidth);
 	}
 
-	public int		getMinHeight()
-	{
+	public int	getMinHeight() {
 		return (_minHeight);
-	}
-
-	public String	getId()
-	{
-		return (_id);
 	}
 }

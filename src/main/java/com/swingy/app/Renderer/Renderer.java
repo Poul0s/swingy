@@ -8,6 +8,7 @@ import com.swingy.app.Map;
 import com.swingy.app.Renderer.Page.CreateChar;
 import com.swingy.app.Renderer.Page.Main;
 import com.swingy.app.Renderer.Page.Page;
+import com.swingy.app.Renderer.Page.SelectChar;
 
 public abstract class Renderer {
 	public enum Menu {
@@ -49,6 +50,7 @@ public abstract class Renderer {
 		switch (_menu) {
 			case MAIN:
 			case CREATE_CHAR:
+			case CHOOSE_CHAR:
 				renderPage(_page);
 				break;
 			case GAME:
@@ -80,6 +82,10 @@ public abstract class Renderer {
 
 			case CREATE_CHAR:
 				_page = new CreateChar();
+				break;
+			
+			case CHOOSE_CHAR:
+				_page = new SelectChar();
 				break;
 		
 			default:

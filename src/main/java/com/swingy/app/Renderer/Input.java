@@ -8,6 +8,7 @@ public class Input {
 		DOWN,
 		LEFT,
 		CLICK,
+		ESC
 	};
 
 	private InputType	_input;

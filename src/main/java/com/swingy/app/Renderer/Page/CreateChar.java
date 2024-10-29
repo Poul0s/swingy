@@ -76,6 +76,9 @@ public class CreateChar extends Page {
 				}
 				break;
 			}
+			case ESC:
+				renderer.setMenu(Renderer.Menu.MAIN);
+				break;
 			default:
 				break;
 		}

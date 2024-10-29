@@ -169,7 +169,7 @@ public class ConsoleRenderer extends Renderer {
 		System.out.print(mapRenderStr);
 	}
 
-	private void	handleControlInput() throws IOException
+	private Input	handleControlInput() throws IOException
 	{
 		int c = RawConsoleInput.read(false);
 		if (c == '[') {
@@ -193,8 +193,10 @@ public class ConsoleRenderer extends Renderer {
 					if (_currentButtonId >= _page.elements.length)
 						_currentButtonId = 0;
 					break;
-				}
-		}
+			}
+		} else if (c == -2)
+			return new Input(Input.InputType.ESC, 0);
+		return new Input(Input.InputType.NONE, 0);
 	}
 
 	public String inputLine(String input) throws IOException
@@ -218,8 +220,7 @@ public class ConsoleRenderer extends Renderer {
 			int c = RawConsoleInput.read(true);
 
 			if (c == '\u001b') {
-				handleControlInput();
-				return new Input(Input.InputType.NONE, 0);
+				return handleControlInput();
 			} else {
 				switch (c) {
 					case 10:

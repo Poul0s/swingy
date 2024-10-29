@@ -1,5 +1,6 @@
 package com.swingy.app;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +54,14 @@ public class Game {
 
 		
 		if (args[0].equals("console"))
-		_renderer = new ConsoleRenderer();
+			_renderer = new ConsoleRenderer();
 		if (args[0].equals("gui"))
-		throw new Exception("Unimplemented render");
+			throw new Exception("Unimplemented render");
 		
 		try {
 			_heroes = DataLoader.loadData();
 		} catch (SQLException e) {
+			// todo add test failed
 			_renderer.addPopup("Failed to load characters : " + e.toString());
 			_heroes = new ArrayList<Hero>();
 		}
@@ -68,6 +70,44 @@ public class Game {
 		{
 			_renderer.render();
 			HandleInput(_renderer.getInputAction(), null);
+		}
+	}
+
+	public static boolean heroNameExist(String name)
+	{
+		if (_heroes == null)
+			return (false);
+		for (Hero hero : _heroes)
+			if (hero.getName().equals(name))
+				return (true);
+		return (false);
+	}
+
+	public static boolean createCharacter(String a_cls, String a_name) {
+		try {
+			Class<?> cls = Class.forName("com.swingy.app.Heroes." + a_cls);
+			if (cls == Hero.class || !Hero.class.isAssignableFrom(cls))
+				throw new ClassNotFoundException(a_cls);
+	
+			Hero hero = (Hero) cls.getDeclaredConstructor(String.class).newInstance(a_name);
+			_heroes.add(hero);
+			DataLoader.saveHero(hero);
+			// todo add bdd
+			return (true);
+		} catch (ClassNotFoundException
+			| SecurityException
+			| InstantiationException
+			| IllegalAccessException
+			| IllegalArgumentException
+			| InvocationTargetException
+			| NoSuchMethodException
+			| SQLException e) {
+				// todo add test failed
+				if (e instanceof ClassNotFoundException)
+					_renderer.addPopup("Hero class '" + a_cls + "' doesnt exist." + e.toString());
+				else
+					_renderer.addPopup("An error occured while generating Hero : "+ e.toString());
+			return (false);
 		}
 	}
 }

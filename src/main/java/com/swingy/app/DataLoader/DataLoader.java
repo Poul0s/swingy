@@ -2,6 +2,7 @@ package com.swingy.app.DataLoader;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.Thread.State;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.swingy.app.Game;
 import com.swingy.app.Artifacts.Artifact;
 import com.swingy.app.Heroes.Hero;
 
@@ -28,8 +30,7 @@ public class DataLoader {
 				level INTEGER NOT NULL DEFAULT 0,
 				xp LONG NOT NULL DEFAULT 0,
 				x INTEGER NOT NULL,
-				y INTEGER NOT NULL,
-				h INTEGER NOT NULL
+				y INTEGER NOT NULL
 			);
 		""");
 
@@ -59,14 +60,14 @@ public class DataLoader {
 	{
 		connectDb();
 		PreparedStatement statement = DB_CONN.prepareStatement("SELECT * FROM artifacts WHERE id = ?;");
-		statement.setInt(0, hero.getId());
+		statement.setInt(1, hero.getId());
 		
 		ResultSet query = statement.executeQuery();
 		while (query.next())
 		{
 			try {
-				Class<?> cls = Class.forName(query.getString("type"));
-				if (cls == Artifact.class || !cls.isAssignableFrom(Artifact.class))
+				Class<?> cls = Class.forName("com.swingy.app.Artifacts." + query.getString("type"));
+				if (cls == Artifact.class || !Artifact.class.isAssignableFrom(cls))
 					throw new ClassNotFoundException(query.getString("type"));
 				Artifact artifact = (Artifact) cls.getDeclaredConstructor().newInstance();
 				artifact.setId(query.getInt("id"));
@@ -98,22 +99,25 @@ public class DataLoader {
 		while (query.next())
 		{
 			try {
-				Class<?> cls = Class.forName(query.getString("class"));
-				if (cls == Hero.class || !cls.isAssignableFrom(Hero.class))
+				Class<?> cls = Class.forName("com.swingy.app.Heroes." + query.getString("class"));
+				if (cls == Hero.class || !Hero.class.isAssignableFrom(cls))
 					throw new ClassNotFoundException(query.getString("class"));
 
-				Hero hero = (Hero) cls.getDeclaredConstructor().newInstance(query.getString("name"));
+				Hero hero = (Hero) cls.getDeclaredConstructor(String.class).newInstance(query.getString("name"));
 				hero.setLevel(query.getInt("level"));
-				hero.setXp(query.getInt("xp"));
+				hero.setXp(query.getLong("xp"));
+				hero.getPosition().x = query.getInt("x");
+				hero.getPosition().y = query.getInt("y");
+				hero.setId(query.getInt("id"));
 				
 				loadArtifacts(hero);
 				res.add(hero);
 			} catch (ClassNotFoundException
-				| InvocationTargetException
 				| SecurityException
 				| InstantiationException
 				| IllegalAccessException
 				| IllegalArgumentException
+				| InvocationTargetException
 				| NoSuchMethodException e) {
 					if (e instanceof ClassNotFoundException)
 						System.err.printf("Hero class '%s' doesnt exist.", query.getString("class"));
@@ -128,15 +132,54 @@ public class DataLoader {
 	public static void	saveHero(Hero hero) throws SQLException
 	{
 		connectDb();
+		if (hero.getId() == null)
+		{
+			PreparedStatement createStmt = DB_CONN.prepareStatement("""
+				INSERT INTO heroes
+					(name, class, level, xp, x, y)
+					VALUES
+					(?, ?, ?, ?, ?, ?);
+				""");
+			createStmt.setString(1, hero.getName());
+			createStmt.setString(2, hero.getClass().getSimpleName());
+			createStmt.setInt(3, hero.getLevel());
+			createStmt.setLong(4, hero.getXp());
+			createStmt.setInt(5, hero.getPosition().x);
+			createStmt.setInt(6, hero.getPosition().y);
+			createStmt.execute();
+
+			Statement getIdStmt = DB_CONN.createStatement();
+			ResultSet res = getIdStmt.executeQuery("SELECT last_insert_rowid() AS row_id;");
+			res.next(); // todo add test for -1 result
+			int id = res.getInt("row_id");
+			hero.setId(id);
+		}
+		else
+		{
+			PreparedStatement updateStmt = DB_CONN.prepareStatement("""
+				UPDATE heroes
+					SET
+						level = ?, xp = ?, x = ?, y = ?
+					WHERE
+						id = ?
+			""");
+			updateStmt.setInt(1, hero.getLevel());
+			updateStmt.setLong(2, hero.getXp());
+			updateStmt.setInt(3, hero.getPosition().x);
+			updateStmt.setInt(4, hero.getPosition().y);
+			updateStmt.execute();
+		}
 	}
 
 	public static void	addArtifact(Hero hero, Artifact artifact) throws SQLException
 	{
 		connectDb();
+		// todo
 	}
 
 	public static void	removeArtifact(Hero hero, Artifact artifact) throws SQLException
 	{
 		connectDb();
+		// todo
 	}
 }

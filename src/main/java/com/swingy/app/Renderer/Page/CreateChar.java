@@ -2,6 +2,7 @@ package com.swingy.app.Renderer.Page;
 
 import java.util.Map;
 
+import com.swingy.app.Game;
 import com.swingy.app.Renderer.Input;
 import com.swingy.app.Renderer.Renderer;
 import com.swingy.app.Renderer.Element.Element;
@@ -19,31 +20,31 @@ public class CreateChar extends Page {
 				"y", 0.2f
 			), new String[] {"Wretch"}),
 	
-			new SelectButton(Map.of(
-				"text", "Choose Artifact",
-				"x", 0.1f,
-				"y", 0.3f
-			), new String[] {"Armor", "Helm", "Weapon"}),
+			// new SelectButton(Map.of(
+			// 	"text", "Choose Artifact",
+			// 	"x", 0.1f,
+			// 	"y", 0.3f
+			// ), new String[] {"Armor", "Helm", "Weapon"}),
 			
 			new InputText(Map.of(
-				"text", "Character",
+				"text", "Character name",
 				"x", 0.1f,
-				"y", 0.4f
+				"y", 0.3f
 			)),
 			
 			new TextButton(Map.of(
 				"text", "Create character",
 				"x", 0.1f,
-				"y", 0.5f
+				"y", 0.4f
 			)),
 	
 			new TextButton(Map.of(
 				"text", "Back",
 				"x", 0.1f,
-				"y", 0.6f
+				"y", 0.5f
 			)),
-		};
-		backgroundColor = new int[] {230, 160, 48};
+		}; // todo add start stats (level, xp, attack, defense, hit points)
+		backgroundColor = new int[] {103, 168, 162};
 	}
 
 	public void HandleInput(Input input, Renderer renderer)
@@ -54,7 +55,22 @@ public class CreateChar extends Page {
 			case CLICK:
 			{
 				switch (input.getValue()) {
-					case 4:
+					case 2:
+					{
+						String name = ((InputText)elements[1]).getInputText();
+						if (name.isBlank())
+							renderer.addPopup("Character name cannot be empty");
+						else if (Game.heroNameExist(name))
+							renderer.addPopup("Name already used.");
+						else
+						{
+							String cls = ((SelectButton)elements[0]).getCurrentElement();
+							if (Game.createCharacter(cls, name))
+								renderer.setMenu(Renderer.Menu.MAIN);
+						}
+						break;
+					}
+					case 3:
 						renderer.setMenu(Renderer.Menu.MAIN);
 						break;
 				}

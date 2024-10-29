@@ -36,7 +36,7 @@ public final class Main extends Page {
 			)),
 		};
 
-		backgroundColor = new int[] {230, 160, 48};
+		backgroundColor = new int[] {103, 168, 162};
 	}
 
 	public void HandleInput(Input input, Renderer renderer)

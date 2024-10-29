@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Base64;
 
 import com.swingy.app.Map;
 import com.swingy.app.Position;
@@ -25,7 +26,7 @@ public class ConsoleRenderer extends Renderer {
 
 	private String	rgbToANSICode(int color[], Boolean background)
 	{
-		// todo add protecc for color len
+		// todo test color len
 		return ("\u001b[" + (background ? "4" : 3) + "8;2;" + color[0] + ";" + color[1] + ";" + color[2] + "m");
 	}
 
@@ -46,35 +47,36 @@ public class ConsoleRenderer extends Renderer {
 	}
 	// private void refreshConsoleSize() // standard input waiting for close (ctrl+d)...
 	// {
-		// try {
-			// final int nbBytesMax = 2 + 4 + 1 + 4 + 1; // ESC[ + w + ; + h + R
-			// byte[] bytes = new byte[nbBytesMax + 1];
-			// int off = 0;
-			// while (System.in.read(bytes, off, 1) != -1) {
-			// 	System.out.println("rade");
-			// 	if (bytes[off] == '\u001b')
-			// 		off = 1;
-			// 	else if (off != 0 && bytes[off] == 'R')
-			// 		break;
-			// 	else if (off == nbBytesMax)
-			// 		off = 0;
-			// 	else if (off != 0)
-			// 		off++;
-			// }
-			// if (off != 0 && bytes[off] == 'R') {
-			// 	bytes[off + 1] = '\0';
-			// 	bytes[0] = 'E';
-			// 	String res = Base64.getEncoder().encodeToString(bytes);
-			// 	System.out.println(res);
-			// } else {
-			// 	String res = Base64.getEncoder().encodeToString(bytes);
-			// 	System.out.println("no : " + res);
-			// }
-		// } catch (IOException e) {
-		// 		System.err.println("Cannot get console size : " + e.toString());
-		// 		_consoleSizeX = 30;
-		// 		_consoleSizeY = 30;
-		// }
+	// 	try {
+	// 		System.out.print("\u001b[9999;9999H\u001b[6n");
+	// 		final int nbBytesMax = 2 + 4 + 1 + 4 + 1; // ESC[ + w + ; + h + R + '\0'
+	// 		byte[] bytes = new byte[nbBytesMax + 1];
+	// 		int off = 0;
+
+	// 		while ((bytes[off] = (byte) RawConsoleInput.read(true)) >= 0) {
+	// 			if (bytes[off] == '\u001b')
+	// 				off = 1;
+	// 			else if (off != 0 && bytes[off] == 'R')
+	// 				break;
+	// 			else if (off == nbBytesMax)
+	// 				off = 0;
+	// 			else if (off != 0)
+	// 				off++;
+	// 		}
+	// 		if (off != 0 && bytes[off] == 'R') {
+	// 			bytes[off + 1] = '\0';
+	// 			bytes[0] = 'E';
+	// 			String res = Base64.getEncoder().encodeToString(bytes);
+	// 			System.err.println(res);
+	// 		} else {
+	// 			String res = Base64.getEncoder().encodeToString(bytes);
+	// 			System.err.println("no : " + res);
+	// 		}
+	// 	} catch (IOException e) {
+	// 			System.err.println("Cannot get console size : " + e.toString());
+	// 			_consoleSizeX = 30;
+	// 			_consoleSizeY = 30;
+	// 	}
 	// }
 
 	public ConsoleRenderer() {
@@ -85,7 +87,7 @@ public class ConsoleRenderer extends Renderer {
 
 	private String fillTerminalColor(int color[])
 	{
-		// todo check size color
+		// todo test size color 
 		String res = "\u001b[H";
 		res += rgbToANSICode(color, true);
 		for (int i = 0; i < _consoleSizeY - 1; i++)

@@ -9,7 +9,6 @@ import com.swingy.app.Artifacts.Artifact;
 public abstract class Hero {
 	private Integer				_id;
 	private String				_name;
-	private String				_class;
 	private int					_level;
 	private long				_experience;
 	private int					_attack;
@@ -18,9 +17,8 @@ public abstract class Hero {
 	private Position			_position;
 	private ArrayList<Artifact>	_artifacts;
 
-	protected Hero(String a_name, String a_class, Artifact a_artifact) {
+	protected Hero(String a_name) {
 		_name = a_name;
-		_class = a_class;
 		_level = 1;
 		_experience = 0;
 		_attack = 0;
@@ -78,5 +76,9 @@ public abstract class Hero {
 
 	public void setId(Integer id) {
 		_id = id;
+	}
+
+	public String getName() {
+		return _name;
 	}
 }

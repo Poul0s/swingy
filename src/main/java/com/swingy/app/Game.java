@@ -14,7 +14,7 @@ import com.swingy.app.Renderer.Renderer;
 import com.swingy.app.Renderer.Page.Main;
 
 public class Game {
-	private static Renderer 	_renderer = null;
+	public static Renderer 	_renderer = null; // todo set as public
 	private static List<Hero>	_heroes = null;
 
 	public static void HandleInput(Input input, Hero hero) //maybe move to each page ???
@@ -23,6 +23,8 @@ public class Game {
 		{
 			switch (input.getType())
 			{
+				case NONE:
+					break;
 				case UP:
 					hero.getPosition().x--;
 					break;
@@ -81,6 +83,20 @@ public class Game {
 			if (hero.getName().equals(name))
 				return (true);
 		return (false);
+	}
+
+	public static String[] getHeroesName() {
+		// todo test _heroes must not be null
+		String[] res = new String[_heroes.size()];
+		for (int i = 0; i < _heroes.size(); i++) {
+			res[i] = _heroes.get(i).getName();
+		}
+		return res;
+	}
+
+	public static Hero	getHero(int idx) {
+		// todo test _heroes must not be null and idx < heroes size
+		return _heroes.get(idx);
 	}
 
 	public static boolean createCharacter(String a_cls, String a_name) {

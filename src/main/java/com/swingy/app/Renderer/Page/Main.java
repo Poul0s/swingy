@@ -17,22 +17,30 @@ public final class Main extends Page {
 			new TextButton(Map.of(
 				"text", "Character creation",
 				"x", 0.1f,
-				"y", 0.2f
+				"y", 0.2f,
+				"onClick", (Element.OnClickEvent) (renderer) -> renderer.setMenu(Renderer.Menu.CREATE_CHAR)
 			)),
 			new TextButton(Map.of(
 				"text", "Character selection",
 				"x", 0.1f,
-				"y", 0.3f
+				"y", 0.3f,
+				"onClick", (Element.OnClickEvent) (renderer) -> renderer.setMenu(Renderer.Menu.CHOOSE_CHAR)
 			)),
 			new TextButton(Map.of(
 				"text", "Options",
 				"x", 0.1f,
-				"y", 0.4f
+				"y", 0.4f,
+				"onClick", (Element.OnClickEvent) (renderer) -> renderer.setMenu(Renderer.Menu.OPTIONS)
 			)),
 			new TextButton(Map.of(
 				"text", "Exit",
 				"x", 0.1f,
-				"y", 0.5f
+				"y", 0.5f,
+				"onClick", new Element.OnClickEvent() {
+					public void callback(Renderer renderer) {
+						System.exit(1);
+					};
+				}
 			)),
 		};
 
@@ -40,27 +48,5 @@ public final class Main extends Page {
 	}
 
 	public void HandleInput(Input input, Renderer renderer)
-	{
-		switch (input.getType())
-		{
-			case CLICK:
-			{
-				switch (input.getValue()) {
-					case 0:
-						renderer.setMenu(Renderer.Menu.CREATE_CHAR);
-						break;
-					case 1:
-						renderer.setMenu(Renderer.Menu.CHOOSE_CHAR);
-						break;
-					case 2:
-						renderer.setMenu(Renderer.Menu.OPTIONS);
-						break;
-					case 3:
-						System.exit(0); // todo save char maybe ???
-						break;
-				}
-				break;
-			}
-		}
-	}
+	{}
 }

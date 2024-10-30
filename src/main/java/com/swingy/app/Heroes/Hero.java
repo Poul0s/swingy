@@ -7,15 +7,15 @@ import com.swingy.app.Position;
 import com.swingy.app.Artifacts.Artifact;
 
 public abstract class Hero {
-	private Integer				_id;
-	private String				_name;
-	private int					_level;
-	private long				_experience;
-	private int					_attack;
-	private int					_defence;
-	private int					_hitPoints;
-	private Position			_position;
-	private ArrayList<Artifact>	_artifacts;
+	protected Integer				_id;
+	protected String				_name;
+	protected int					_level;
+	protected long					_experience;
+	protected int					_attack;
+	protected int					_defence;
+	protected int					_hitPoints;
+	protected Position				_position;
+	protected ArrayList<Artifact>	_artifacts;
 
 	protected Hero(String a_name) {
 		_name = a_name;
@@ -80,5 +80,17 @@ public abstract class Hero {
 
 	public String getName() {
 		return _name;
+	}
+
+	public int getAttack() {
+		return _attack;
+	}
+
+	public int getDefence() {
+		return _defence;
+	}
+
+	public int getHitPoint() {
+		return _hitPoints;
 	}
 }

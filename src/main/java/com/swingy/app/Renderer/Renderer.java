@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.Popup;
 
 import com.swingy.app.Map;
+import com.swingy.app.Heroes.Hero;
 import com.swingy.app.Renderer.Page.CreateChar;
 import com.swingy.app.Renderer.Page.Main;
 import com.swingy.app.Renderer.Page.Page;
@@ -92,5 +93,11 @@ public abstract class Renderer {
 				_page = null;
 		}
 		pageChanged();
+	}
+
+	public void openGame(Hero hero) {
+		_map = new Map(hero);
+		_menu = Menu.GAME;
+		_page = null;
 	}
 }

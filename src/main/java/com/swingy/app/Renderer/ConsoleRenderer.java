@@ -183,12 +183,12 @@ public class ConsoleRenderer extends Renderer {
 					if (_page != null && _page.elements[_currentButtonId] instanceof SelectButton)
 						((SelectButton) _page.elements[_currentButtonId]).next();
 					break;
-				case 65: //up
+				case 65: //up // todo prevent from currentButtonId point to textElement
 					_currentButtonId--;
 					if (_currentButtonId == -1)
 						_currentButtonId = _page.elements.length - 1;
 					break;
-				case 66: //down
+				case 66: //down // todo prevent from currentButtonId point to textElement
 					_currentButtonId++;
 					if (_currentButtonId >= _page.elements.length)
 						_currentButtonId = 0;
@@ -227,10 +227,23 @@ public class ConsoleRenderer extends Renderer {
 						if (_page != null && _page.elements[_currentButtonId] instanceof InputText)
 							((InputText) _page.elements[_currentButtonId]).setInputText(inputLine("Enter new value : "));
 						else
-							return new Input(Input.InputType.CLICK, _currentButtonId);
-					default:
-						return new Input(Input.InputType.NONE, 0);
+							_page.elements[_currentButtonId].onClick(this);
+						break;
+					case 'w':
+					case 'W':
+						return new Input(Input.InputType.UP, 0);
+					case 's':
+					case 'S':
+						return new Input(Input.InputType.DOWN, 0);
+					case 'a':
+					case 'A':
+						return new Input(Input.InputType.LEFT, 0);
+					case 'd':
+					case 'D':
+						return new Input(Input.InputType.RIGHT, 0);
+
 				}
+				return new Input(Input.InputType.NONE, 0);
 
 			}
 		} catch (IOException e) {

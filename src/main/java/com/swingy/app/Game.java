@@ -17,27 +17,31 @@ public class Game {
 	public static Renderer 	_renderer = null; // todo set as public
 	private static List<Hero>	_heroes = null;
 
-	public static void HandleInput(Input input, Hero hero) //maybe move to each page ???
+	public static void HandleInput(Input input) //maybe move to each page ???
 	{
 		if (_renderer.getMenu() == Renderer.Menu.GAME)
 		{
+			Map map = _renderer.getMap();
+			Hero hero = map.getHero();
 			switch (input.getType())
 			{
 				case NONE:
 					break;
 				case UP:
-					hero.getPosition().x--;
-					break;
-				case DOWN:
-					hero.getPosition().x++;
-					break;
-				case LEFT:
 					hero.getPosition().y--;
 					break;
-				case RIGHT:
+				case DOWN:
 					hero.getPosition().y++;
 					break;
-				// case back && exit && maybe save ???
+				case LEFT:
+					hero.getPosition().x--;
+					break;
+				case RIGHT:
+					hero.getPosition().x++;
+					break;
+				case ESC:
+					_renderer.closeGame();
+					break;
 				default:
 					_renderer.addPopup("invalid input");
 					break;
@@ -71,7 +75,7 @@ public class Game {
 		while (true)
 		{
 			_renderer.render();
-			HandleInput(_renderer.getInputAction(), null);
+			HandleInput(_renderer.getInputAction());
 		}
 	}
 

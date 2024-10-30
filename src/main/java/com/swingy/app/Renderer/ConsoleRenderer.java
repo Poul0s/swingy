@@ -143,8 +143,8 @@ public class ConsoleRenderer extends Renderer {
 	protected void renderMap() {
 		String mapRenderStr = "\u001b[2J";
 		Position playerPos = _map.getHero().getPosition();
-		int offY = (_consoleSizeY - 1) / 2 - playerPos.x;
-		int offX = (_consoleSizeX) / 2 - playerPos.y;
+		int offY = (_consoleSizeY - 1) / 2 - playerPos.y;
+		int offX = (_consoleSizeX) / 2 - playerPos.x;
 
 		for (int y = 0; y < _consoleSizeY - 1; y++) {
 			for (int x = 0; x < _consoleSizeX; x++) {
@@ -176,19 +176,27 @@ public class ConsoleRenderer extends Renderer {
 			c = RawConsoleInput.read(false);
 			switch (c) {
 				case 68: //left
-					if (_page != null && _page.elements[_currentButtonId] instanceof SelectButton)
+					if (_page == null)
+						return new Input(Input.InputType.LEFT, 0);
+					if (_page.elements[_currentButtonId] instanceof SelectButton)
 						((SelectButton) _page.elements[_currentButtonId]).previous();
 					break;
 				case 67: //right
-					if (_page != null && _page.elements[_currentButtonId] instanceof SelectButton)
+					if (_page == null)
+						return new Input(Input.InputType.RIGHT, 0);
+					if (_page.elements[_currentButtonId] instanceof SelectButton)
 						((SelectButton) _page.elements[_currentButtonId]).next();
 					break;
 				case 65: //up // todo prevent from currentButtonId point to textElement
+					if (_page == null)
+						return new Input(Input.InputType.UP, 0);
 					_currentButtonId--;
 					if (_currentButtonId == -1)
 						_currentButtonId = _page.elements.length - 1;
 					break;
 				case 66: //down // todo prevent from currentButtonId point to textElement
+					if (_page == null)
+						return new Input(Input.InputType.DOWN, 0);
 					_currentButtonId++;
 					if (_currentButtonId >= _page.elements.length)
 						_currentButtonId = 0;

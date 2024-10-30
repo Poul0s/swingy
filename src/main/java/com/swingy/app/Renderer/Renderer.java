@@ -74,6 +74,10 @@ public abstract class Renderer {
 		return (_page);
 	}
 
+	public Map	getMap() {
+		return (_map);
+	}
+
 	public void	setMenu(Menu menu) {
 		_menu = menu;
 		switch (menu) {
@@ -99,5 +103,10 @@ public abstract class Renderer {
 		_map = new Map(hero);
 		_menu = Menu.GAME;
 		_page = null;
+	}
+
+	public void closeGame() {
+		_map = null;
+		setMenu(Menu.MAIN);
 	}
 }

@@ -1,4 +1,4 @@
-package com.swingy.app.Heroes;
+package com.swingy.app.Mob.Heroes;
 
 public class Wretch extends Hero {
 	public static int			startAttack = 1;

@@ -3,7 +3,7 @@ package com.swingy.app.Renderer.Page;
 import java.util.Map;
 
 import com.swingy.app.Game;
-import com.swingy.app.Heroes.Hero;
+import com.swingy.app.Mob.Heroes.Hero;
 import com.swingy.app.Renderer.Input;
 import com.swingy.app.Renderer.Renderer;
 import com.swingy.app.Renderer.Element.Element;

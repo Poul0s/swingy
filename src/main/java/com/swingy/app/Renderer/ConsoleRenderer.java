@@ -17,7 +17,7 @@ import com.swingy.app.Renderer.Page.CreateChar;
 import com.swingy.app.Renderer.Page.Main;
 import com.swingy.app.Renderer.Page.Page;
 
-import main.java.com.swingy.app.RawConsoleInput;
+import com.swingy.app.RawConsoleInput;
 
 public class ConsoleRenderer extends Renderer {
 	private int		_consoleSizeX;

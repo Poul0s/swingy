@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.swingy.app.DataLoader.DataLoader;
-import com.swingy.app.Heroes.Hero;
-import com.swingy.app.Heroes.Wretch;
+import com.swingy.app.Mob.Heroes.Hero;
+import com.swingy.app.Mob.Heroes.Wretch;
 import com.swingy.app.Renderer.ConsoleRenderer;
 import com.swingy.app.Renderer.Input;
 import com.swingy.app.Renderer.Renderer;
@@ -105,7 +105,7 @@ public class Game {
 
 	public static boolean createCharacter(String a_cls, String a_name) {
 		try {
-			Class<?> cls = Class.forName("com.swingy.app.Heroes." + a_cls);
+			Class<?> cls = Class.forName("com.swingy.app.Mob.Heroes." + a_cls);
 			if (cls == Hero.class || !Hero.class.isAssignableFrom(cls))
 				throw new ClassNotFoundException(a_cls);
 	

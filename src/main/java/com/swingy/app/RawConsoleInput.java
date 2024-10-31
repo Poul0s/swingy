@@ -11,7 +11,7 @@
 //
 // Home page: http://www.source-code.biz/snippets/java/RawConsoleInput
 
-package main.java.com.swingy.app;
+package com.swingy.app;
 
 import java.io.InputStream;
 import java.io.IOException;

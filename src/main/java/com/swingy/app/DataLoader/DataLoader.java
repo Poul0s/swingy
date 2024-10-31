@@ -13,7 +13,7 @@ import java.sql.Statement;
 
 import com.swingy.app.Game;
 import com.swingy.app.Artifacts.Artifact;
-import com.swingy.app.Heroes.Hero;
+import com.swingy.app.Mob.Heroes.Hero;
 
 public class DataLoader {
 	private static final String DB_URL = "jdbc:sqlite:game.db";
@@ -99,7 +99,7 @@ public class DataLoader {
 		while (query.next())
 		{
 			try {
-				Class<?> cls = Class.forName("com.swingy.app.Heroes." + query.getString("class"));
+				Class<?> cls = Class.forName("com.swingy.app.Mob.Heroes." + query.getString("class"));
 				if (cls == Hero.class || !Hero.class.isAssignableFrom(cls))
 					throw new ClassNotFoundException(query.getString("class"));
 

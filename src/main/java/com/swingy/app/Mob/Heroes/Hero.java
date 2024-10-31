@@ -1,30 +1,21 @@
-package com.swingy.app.Heroes;
+package com.swingy.app.Mob.Heroes;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-import com.swingy.app.Position;
 import com.swingy.app.Artifacts.Artifact;
+import com.swingy.app.Mob.Mob;
 
-public abstract class Hero {
+public abstract class Hero extends Mob {
 	protected Integer				_id;
 	protected String				_name;
-	protected int					_level;
 	protected long					_experience;
-	protected int					_attack;
-	protected int					_defence;
-	protected int					_hitPoints;
-	protected Position				_position;
+	protected int					_level;
 	protected ArrayList<Artifact>	_artifacts;
 
 	protected Hero(String a_name) {
 		_name = a_name;
 		_level = 1;
 		_experience = 0;
-		_attack = 0;
-		_defence = 0;
-		_hitPoints = 0;
-		_position = new Position();
 		_id = null;
 		_artifacts = new ArrayList<Artifact>();
 	}
@@ -66,10 +57,6 @@ public abstract class Hero {
 		_experience = xp;
 	}
 
-	public Position getPosition() {
-		return _position;
-	}
-
 	public Integer getId() {
 		return _id;
 	}
@@ -80,17 +67,5 @@ public abstract class Hero {
 
 	public String getName() {
 		return _name;
-	}
-
-	public int getAttack() {
-		return _attack;
-	}
-
-	public int getDefence() {
-		return _defence;
-	}
-
-	public int getHitPoint() {
-		return _hitPoints;
 	}
 }

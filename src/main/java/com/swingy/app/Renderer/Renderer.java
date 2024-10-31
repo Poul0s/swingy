@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.Popup;
 
 import com.swingy.app.Map;
-import com.swingy.app.Heroes.Hero;
+import com.swingy.app.Mob.Heroes.Hero;
 import com.swingy.app.Renderer.Page.CreateChar;
 import com.swingy.app.Renderer.Page.Main;
 import com.swingy.app.Renderer.Page.Page;

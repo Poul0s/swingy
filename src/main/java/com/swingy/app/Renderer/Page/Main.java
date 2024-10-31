@@ -1,10 +1,7 @@
 package com.swingy.app.Renderer.Page;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.swingy.app.Position;
 import com.swingy.app.Renderer.Input;
 import com.swingy.app.Renderer.Renderer;
 import com.swingy.app.Renderer.Element.Element;

@@ -7,7 +7,7 @@ public class Input {
 		RIGHT,
 		DOWN,
 		LEFT,
-		CLICK,
+		ENTER,
 		ESC
 	};
 

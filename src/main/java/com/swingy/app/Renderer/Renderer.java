@@ -66,6 +66,8 @@ public abstract class Renderer {
 		_popups.add(popup);
 	}
 
+	public abstract int	askPopup(String message, String[] choices);
+
 	public Menu	getMenu() {
 		return (_menu);
 	}

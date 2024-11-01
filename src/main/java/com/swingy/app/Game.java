@@ -14,39 +14,74 @@ import com.swingy.app.Renderer.Renderer;
 import com.swingy.app.Renderer.Page.Main;
 
 public class Game {
-	public static Renderer 	_renderer = null; // todo set as public
+	private static final String		MSG_FIGHT = "You found a monster level %d (%d attack, %d defence, %d hitpoint). Do you want to fight ?";
+	private static final String[]	MSG_FIGHT_CHOICES = {"Fight", "Run away"};
+
+
+	public static Renderer		_renderer = null; // todo set as private
 	private static List<Hero>	_heroes = null;
 
-	public static void HandleInput(Input input) //maybe move to each page ???
-	{
-		if (_renderer.getMenu() == Renderer.Menu.GAME)
-		{
-			Map map = _renderer.getMap();
-			Hero hero = map.getHero();
-			switch (input.getType())
-			{
-				case NONE:
-					break;
-				case UP:
-					hero.getPosition().y--;
-					break;
-				case DOWN:
-					hero.getPosition().y++;
-					break;
-				case LEFT:
-					hero.getPosition().x--;
-					break;
-				case RIGHT:
-					hero.getPosition().x++;
-					break;
-				case ESC:
-					_renderer.closeGame();
-					break;
-				default:
-					_renderer.addPopup("invalid input");
-					break;
-			}
+	private static void MovePlayer(Input input, Hero hero, boolean forward) {
+		// todo test direction must be UP/DOWN/LEFT/RIGHT
+		Vector2 direction = new Vector2();
+
+		switch (input.getType()) {
+			case UP:
+				direction.y--;
+				break;
+			case DOWN:
+				direction.y++;
+				break;
+			case LEFT:
+				direction.x--;
+				break;
+			case RIGHT:
+				direction.x++;
+				break;
 		}
+		if (!forward)
+			direction.multiply(-1);
+		hero.getPosition().add(direction);
+	}
+
+	private static void StartFight() {
+		_renderer.askPopup(MSG_FIGHT, MSG_FIGHT_CHOICES);
+	}
+
+	private static void HandleGameInput(Input input) {
+		Map map = _renderer.getMap();
+		Hero hero = map.getHero();
+		if (input.getType() == Input.InputType.NONE)
+			return;
+
+		switch (input.getType())
+		{
+			case NONE:
+				break;
+			
+			case UP:
+			case DOWN:
+			case LEFT:
+			case RIGHT: {
+				MovePlayer(input, hero, true);
+				// Monster monster = map.getMonsterAtPos(hero.getPosition());
+				// if (monster != null)
+					// StartFight(input, hero, monster);
+				StartFight();
+				break;
+			}
+			case ESC:
+				_renderer.closeGame();
+				break;
+			default:
+				_renderer.addPopup("invalid input");
+				break;
+		}
+	}
+
+	public static void HandleInput(Input input) {
+		if (_renderer.getMenu() == Renderer.Menu.GAME)
+			HandleGameInput(input);
 		else
 			_renderer.getPage().HandleInput(input, _renderer);
 	}

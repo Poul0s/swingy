@@ -8,7 +8,7 @@ import com.swingy.app.Mob.Heroes.Hero;
 
 public class Map {
 	private Hero						_hero;
-	private HashMap<Position, Monster>	_monsters;
+	private HashMap<Vector2, Monster>	_monsters;
 
 	public enum blockType {
 		NONE,
@@ -56,13 +56,13 @@ public class Map {
 				
 				double spawnPossibility = 0.1 + (0.3 * dist); // 10% if in the middle, 40% at bordure
 				if (random.nextDouble() <= spawnPossibility)
-					generateMonster(new Position(x, y), dist);
+					generateMonster(new Vector2(x, y), dist);
 			}
 		}
 	}
 
 
-	private void	generateMonster(Position position, double dist) {
+	private void	generateMonster(Vector2 position, double dist) {
 
 		int level = (int) (50 * dist); // 1 if in the middle, 50 + 35-45% of player level
 
@@ -91,11 +91,10 @@ public class Map {
 		if (x < posMin || x > posMax
 			|| y < posMin || y > posMax)
 			return blockType.NONE;
-		// todo check monster
 		return blockType.EMPTY;
 	}
 
-	public Monster getMonsterAtPos(Position position) {
+	public Monster getMonsterAtPos(Vector2 position) {
 		Monster monster = _monsters.get(position);
 		return monster;
 	}

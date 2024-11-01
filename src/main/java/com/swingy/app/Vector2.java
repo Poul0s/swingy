@@ -2,23 +2,33 @@ package com.swingy.app;
 
 import java.util.Objects;
 
-public class Position {
+public class Vector2 {
 	public int			x;
 	public int			y;
 
-	public Position() {
+	public Vector2() {
 		x = 0;
 		y = 0;
 	}
 
-	public Position(int a_x, int a_y) {
+	public Vector2(int a_x, int a_y) {
 		x = a_x;
 		y = a_y;
 	}
 
-	public Position(Position a_Position) {
-		x = a_Position.x;
-		y = a_Position.y;
+	public Vector2(Vector2 vec2) {
+		x = vec2.x;
+		y = vec2.y;
+	}
+
+	public void multiply(int val) {
+		x *= val;
+		y *= val;
+	}
+
+	public void add(Vector2 vec2) {
+		x += vec2.x;
+		y += vec2.y;
 	}
 
 	@Override
@@ -27,7 +37,7 @@ public class Position {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Position that = (Position) o;
+		Vector2 that = (Vector2) o;
 		return x == that.x && y == that.y;
 	}
 

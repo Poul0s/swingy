@@ -1,21 +1,21 @@
 package com.swingy.app.Mob;
 
-import com.swingy.app.Position;
+import com.swingy.app.Vector2;
 
 public abstract class Mob {
 	protected int					_attack;
 	protected int					_defence;
 	protected int					_hitPoints;
-	protected Position				_position;
+	protected Vector2				_position;
 
 	protected Mob() {
 		_attack = 0;
 		_defence = 0;
 		_hitPoints = 0;
-		_position = new Position();
+		_position = new Vector2();
 	}
 
-	public Position getPosition() {
+	public Vector2 getPosition() {
 		return _position;
 	}
 

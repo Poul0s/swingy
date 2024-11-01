@@ -2,10 +2,10 @@ package com.swingy.app.Mob;
 
 import java.util.Random;
 
-import com.swingy.app.Position;
+import com.swingy.app.Vector2;
 
 public class Monster extends Mob {
-	public Monster(int level, Position position) {
+	public Monster(int level, Vector2 position) {
 		Random random = new Random();
 
 		int attr_value = generate_attribute_value(random, level);

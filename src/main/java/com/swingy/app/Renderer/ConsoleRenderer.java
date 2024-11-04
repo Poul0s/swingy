@@ -168,9 +168,6 @@ public class ConsoleRenderer extends Renderer {
 	}
 
 	public int askPopup(String message, String[] choices) {
-		// todo disable cursor or set pos at last line
-
-
 		// separate message in lines
 		int maxChar = (int) (_consoleSizeX * 0.75);
 		int maxLines = (int) (_consoleSizeY * 0.5);
@@ -248,7 +245,7 @@ public class ConsoleRenderer extends Renderer {
 		// handle choices
 		int currentChoice = 0;
 		while (true) {
-			renderStr = "\u001b[" + startPosX + "G";
+			renderStr = "\u001b[" + (startPosY + lines.size() + 1) + ";" + startPosX + "H\u001b[44m";
 			for (int i = 0; i < choices.length; i++) {
 				int paddingLeft = (choicesMaxLen - choices[i].length()) / 2;
 				renderStr += " ".repeat(paddingLeft);
@@ -260,6 +257,7 @@ public class ConsoleRenderer extends Renderer {
 				if (i != choices.length - 1)
 					renderStr += " ";
 			}
+			renderStr += "\u001b[" + _consoleSizeY + ";0H\u001b[0m";
 			System.out.print(renderStr);
 			Input input = getInputAction();
 			switch (input.getType()) {
@@ -278,7 +276,6 @@ public class ConsoleRenderer extends Renderer {
 					break;
 				default:
 					break;
-
 			}
 		}
 	}

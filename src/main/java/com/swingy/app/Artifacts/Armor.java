@@ -1,7 +1,7 @@
 package com.swingy.app.Artifacts;
 
 public class Armor extends Artifact {
-	public Armor() {
-		super();
+	public Armor(int level) {
+		super(level);
 	}
 }

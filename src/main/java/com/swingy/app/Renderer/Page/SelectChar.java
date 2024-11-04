@@ -7,11 +7,9 @@ import com.swingy.app.Mob.Heroes.Hero;
 import com.swingy.app.Renderer.Input;
 import com.swingy.app.Renderer.Renderer;
 import com.swingy.app.Renderer.Element.Element;
-import com.swingy.app.Renderer.Element.InputText;
 import com.swingy.app.Renderer.Element.SelectButton;
 import com.swingy.app.Renderer.Element.TextButton;
 import com.swingy.app.Renderer.Element.TextElement;
-import com.swingy.app.Renderer.Page.Page;
 
 public class SelectChar extends Page {
 	public SelectChar() {

@@ -7,21 +7,16 @@ import java.util.List;
 
 import com.swingy.app.DataLoader.DataLoader;
 import com.swingy.app.Mob.Heroes.Hero;
-import com.swingy.app.Mob.Heroes.Wretch;
+import com.swingy.app.Mob.Monster;
 import com.swingy.app.Renderer.ConsoleRenderer;
 import com.swingy.app.Renderer.Input;
 import com.swingy.app.Renderer.Renderer;
-import com.swingy.app.Renderer.Page.Main;
 
 public class Game {
-	private static final String		MSG_FIGHT = "You found a monster level %d (%d attack, %d defence, %d hitpoint). Do you want to fight ?";
-	private static final String[]	MSG_FIGHT_CHOICES = {"Fight", "Run away"};
-
-
 	public static Renderer		_renderer = null; // todo set as private
 	private static List<Hero>	_heroes = null;
 
-	private static void MovePlayer(Input input, Hero hero, boolean forward) {
+	public static void MovePlayer(Input input, Hero hero, boolean forward) {
 		// todo test direction must be UP/DOWN/LEFT/RIGHT
 		Vector2 direction = new Vector2();
 
@@ -44,10 +39,6 @@ public class Game {
 		hero.getPosition().add(direction);
 	}
 
-	private static void StartFight() {
-		_renderer.askPopup(MSG_FIGHT, MSG_FIGHT_CHOICES);
-	}
-
 	private static void HandleGameInput(Input input) {
 		Map map = _renderer.getMap();
 		Hero hero = map.getHero();
@@ -64,10 +55,10 @@ public class Game {
 			case LEFT:
 			case RIGHT: {
 				MovePlayer(input, hero, true);
-				// Monster monster = map.getMonsterAtPos(hero.getPosition());
-				// if (monster != null)
-					// StartFight(input, hero, monster);
-				StartFight();
+				_renderer.render();
+				Monster monster = map.getMonsterAtPos(hero.getPosition());
+				if (monster != null)
+					Fight.StartFight(input, hero, monster, _renderer);
 				break;
 			}
 			case ESC:

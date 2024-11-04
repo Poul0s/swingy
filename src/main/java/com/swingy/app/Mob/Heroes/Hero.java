@@ -2,51 +2,52 @@ package com.swingy.app.Mob.Heroes;
 
 import java.util.ArrayList;
 
+import com.swingy.app.Artifacts.Armor;
 import com.swingy.app.Artifacts.Artifact;
+import com.swingy.app.Artifacts.Helm;
+import com.swingy.app.Artifacts.Weapon;
 import com.swingy.app.Mob.Mob;
+import com.swingy.app.Renderer.Renderer;
 
 public abstract class Hero extends Mob {
 	protected Integer				_id;
 	protected String				_name;
 	protected long					_experience;
-	protected int					_level;
 	protected ArrayList<Artifact>	_artifacts;
 
 	protected Hero(String a_name) {
 		_name = a_name;
-		_level = 1;
 		_experience = 0;
 		_id = null;
 		_artifacts = new ArrayList<Artifact>();
 	}
 
-	private	long calculateLvlUpXpRequired() {
-		return (_level * 1000 + ((long) Math.pow(_level - 1, 2)) * 450);
-	}
-
-	public void	addXp(long xp) {
+	public void	addXp(long xp, Renderer renderer) {
 		_experience += xp;
-		long lvlUpXp = calculateLvlUpXpRequired();
-		while (_experience >= lvlUpXp) {
-			_experience -= lvlUpXp;
-			_level += 1;
-			lvlUpXp = calculateLvlUpXpRequired();
-			throw new RuntimeException("lvl up unsupported yet"); // todo notificate renderer
+		long lvlUpXp = Mob.calculateLvlXp(_level);
+		if (_experience >= lvlUpXp) {
+			while (_experience >= lvlUpXp) {
+				_experience -= lvlUpXp;
+				_level += 1;
+				lvlUpXp = Mob.calculateLvlXp(_level);
+				renderer.addPopup("You just leveled up to level " + _level + "!");
+			}
+			renderer.getMap().refreshMapSize();
 		}
+
 	}
 
 	public void addArtifact(Artifact artifact)
 	{
 		_artifacts.add(artifact);
-		// todo change attributes
-	}
-
-	public int getLevel() {
-		return _level;
-	}
-
-	public void setLevel(int level) {
-		_level = level;
+		if (artifact instanceof Weapon)
+			_attack += artifact.getLevel();
+		else if (artifact instanceof Armor)
+			_defence += artifact.getLevel();
+		else if (artifact instanceof Helm)
+			_hitPoints += artifact.getLevel();
+		// else
+		/// todo test failed
 	}
 
 	public long getXp() {

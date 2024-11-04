@@ -11,6 +11,6 @@ combat monstre:
 
 
 gain monstre:
-	- ~5%-15% xp of monster based on his level
+	- ~25%-50% xp of monster based on his level
 	- random artifact of attack, defence, hitpoints if monster has attribute of the artifact (>=1)
-		artifact value is 10% of attribute value with a minimum of 1
+		artifact value is 20% of attribute value with a minimum of 1

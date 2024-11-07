@@ -173,6 +173,24 @@ public class DataLoader {
 		}
 	}
 
+	public static void removeHero(Hero hero) throws SQLException
+	{
+		connectDb();
+		PreparedStatement rmStmt = DB_CONN.prepareStatement("""
+			DELETE FROM heroes
+				WHERE id = ?;
+		""");
+		rmStmt.setInt(1, hero.getId());
+		rmStmt.execute();
+
+		rmStmt = DB_CONN.prepareStatement("""
+			DELETE FROM artifacts
+				WHERE heroId = ?;
+		""");
+		rmStmt.setInt(1, hero.getId());
+		rmStmt.execute();
+	}
+
 	public static void	addArtifact(Hero hero, Artifact artifact) throws SQLException
 	{
 		connectDb();

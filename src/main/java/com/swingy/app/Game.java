@@ -156,4 +156,13 @@ public class Game {
 			return (false);
 		}
 	}
+
+	public static void removeCharacter(Hero hero) {
+		try {
+			DataLoader.removeHero(hero);
+			_heroes.remove(hero);
+		} catch (Exception err) {
+			System.err.println(err); // todo
+		}
+	}
 }

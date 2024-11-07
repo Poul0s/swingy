@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.xml.crypto.Data;
+
 import com.swingy.app.Artifacts.Armor;
 import com.swingy.app.Artifacts.Artifact;
 import com.swingy.app.Artifacts.Helm;
@@ -20,6 +22,9 @@ public class Fight {
 	private static final String[]	MSG_FIGHT_CHOICES = {"Fight", "Run away"};
 	private static final String		MSG_ARTIFACT = "You found an %s of level %d. Do you want to take it ?";
 	private static final String[]	MSG_ARTIFACT_CHOICES = {"Yes", "No"};
+	private static final String		MSG_DIE = "You just die and lost everything...";
+	private static final String[]	MSG_DIE_CHOICES = {"Go back"};
+
 
 	private static void FightWon(Hero hero, Monster monster, Renderer renderer) {
 		Random random = new Random();
@@ -86,7 +91,9 @@ public class Fight {
 					monster.Attack(hero);
 			}
 			if (hero.getHealth() <= 0.0) {
-				System.err.println("Hero dies"); // todo
+				Game.removeCharacter(hero);
+				renderer.askPopup(MSG_DIE, MSG_DIE_CHOICES);
+				renderer.closeGame();
 			} else 
 				FightWon(hero, monster, renderer);
 		}

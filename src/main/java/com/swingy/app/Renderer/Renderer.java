@@ -26,7 +26,6 @@ public abstract class Renderer {
 	protected Map				_map;
 	protected ArrayList<String>	_popups;
 
-
 	public Renderer()
 	{
 		_map = null;
@@ -110,5 +109,20 @@ public abstract class Renderer {
 	public void closeGame() {
 		_map = null;
 		setMenu(Menu.MAIN);
+	}
+
+	protected String reduceNumber(long nb) {
+		char[] letters = {'K', 'M', 'B', 'T'};
+		int suffix = -1;
+
+		while (suffix < letters.length && nb / 1000 > 0) {
+			suffix++;
+			nb /= 1000;
+		}
+
+		if (suffix != -1)
+			return String.valueOf(nb) + letters[suffix];
+		else
+			return String.valueOf(nb);
 	}
 }

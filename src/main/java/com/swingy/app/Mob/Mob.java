@@ -53,10 +53,10 @@ public abstract class Mob {
 		_health = health;
 	}
 
-	public boolean Attack(Mob target) {
+	public void Attack(Mob target) {
 		Random random = new Random();
 		if (random.nextDouble() < 0.05) // dodge
-			return (false);
+			return;
 
 		double health = target.getHealth();
 		double attack = this.getAttack();
@@ -65,11 +65,10 @@ public abstract class Mob {
 		double absorb = target.getDefence() * 0.8;
 		attack -= absorb;
 		if (attack <= 0.0)
-			return (false);
+			return;
 		
 		health -= attack;
 		target.setHealth(health);
-		return (health <= 0.0);
 	}
 
 	public static long	calculateLvlXp(int level) {

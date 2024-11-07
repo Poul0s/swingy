@@ -24,7 +24,7 @@ public class Fight {
 	private static void FightWon(Hero hero, Monster monster, Renderer renderer) {
 		Random random = new Random();
 				
-		double xpGainPercent = (random.nextDouble() * 0.25) + 1.25; // between 25% and 50%
+		double xpGainPercent = (random.nextDouble() * 0.35) + 1.15; // between 15% and 40%
 		long xpGain = (long) (Mob.calculateLvlXp(monster.getLevel() - 1) * xpGainPercent);
 		hero.addXp(xpGain, renderer);
 		
@@ -33,11 +33,11 @@ public class Fight {
 		if (random.nextDouble() <= 0.75) { // 75% winning artifact
 			ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 			if (monster.getAttack() > 0)
-				artifacts.add(new Weapon((int) Math.max(monster.getAttack() * 0.2, 1)));
+				artifacts.add(new Weapon((int) Math.max(monster.getAttack() * 0.4, 1)));
 			if (monster.getDefence() > 0)
-				artifacts.add(new Armor((int) Math.max(monster.getDefence() * 0.2, 1)));
+				artifacts.add(new Armor((int) Math.max(monster.getDefence() * 0.4, 1)));
 			if (monster.getHitPoint() > 0)
-				artifacts.add(new Helm((int) Math.max(monster.getHitPoint() * 0.2, 1)));
+				artifacts.add(new Helm((int) Math.max(monster.getHitPoint() * 0.4, 1)));
 
 			if (artifacts.size() > 0) {
 				artifact = artifacts.get(random.nextInt(artifacts.size()));
@@ -50,11 +50,11 @@ public class Fight {
 		}
 		
 		try {
+			DataLoader.saveHero(hero);
 			if (artifact != null)
 				DataLoader.addArtifact(hero, artifact);
-			DataLoader.saveHero(hero);
 		} catch (SQLException err) {
-			// todo
+			System.err.println(err);
 		}
 	}
 
@@ -81,11 +81,12 @@ public class Fight {
 			monster.setHealth(monster.getHitPoint());
 
 			while (hero.getHealth() > 0.0 && monster.getHealth() > 0.0) {
-				if (!hero.Attack(monster))
+				hero.Attack(monster);
+				if (monster.getHealth() > 0.0)
 					monster.Attack(hero);
 			}
 			if (hero.getHealth() <= 0.0) {
-				// hero dies
+				System.err.println("Hero dies"); // todo
 			} else 
 				FightWon(hero, monster, renderer);
 		}

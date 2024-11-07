@@ -10,6 +10,8 @@ import java.util.Base64;
 
 import com.swingy.app.Map;
 import com.swingy.app.Vector2;
+import com.swingy.app.Mob.Mob;
+import com.swingy.app.Mob.Heroes.Hero;
 import com.swingy.app.Renderer.Element.Element;
 import com.swingy.app.Renderer.Element.InputText;
 import com.swingy.app.Renderer.Element.SelectButton;
@@ -143,7 +145,9 @@ public class ConsoleRenderer extends Renderer {
 
 	protected void renderMap() {
 		String mapRenderStr = "\u001b[2J";
-		Vector2 playerPos = _map.getHero().getPosition();
+		Hero player = _map.getHero();
+		Vector2 playerPos = player.getPosition();
+
 		int offY = (_consoleSizeY - 1) / 2 - playerPos.y;
 		int offX = (_consoleSizeX) / 2 - playerPos.x;
 
@@ -164,6 +168,15 @@ public class ConsoleRenderer extends Renderer {
 			}
 			mapRenderStr += '\n';
 		}
+		mapRenderStr += "\u001b[H";
+		mapRenderStr += "Position: " + playerPos.x + ", " + playerPos.y + "\n";
+		mapRenderStr += "Level: " + player.getLevel() + "\n";
+		mapRenderStr += "Xp: " + reduceNumber(player.getXp()) + " / " + reduceNumber(Mob.calculateLvlXp(player.getLevel())) + "\n";
+		mapRenderStr += "Attack: " + player.getAttack() + "\n";
+		mapRenderStr += "Defence: " + player.getDefence() + "\n";
+		mapRenderStr += "HitPoint: " + player.getHitPoint() + "\n";
+		mapRenderStr += "\u001b[" + _consoleSizeY + ";0H";
+
 		System.out.print(mapRenderStr);
 	}
 

@@ -10,8 +10,6 @@ public class Monster extends Mob {
 
 		_level = level;
 
-		level -= 4;
-
 		level -= 1; // hitpoint min as 1
 
 		int attr_value = generate_attribute_value(random, level, 3);

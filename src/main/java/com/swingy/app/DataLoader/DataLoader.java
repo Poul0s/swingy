@@ -39,6 +39,7 @@ public class DataLoader {
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				heroId INTEGER NOT NULL,
 				type VARCHAR(64) NOT NULL,
+				level INTEGER NOT NULL,
 				
 				FOREIGN KEY(heroId) REFERENCES heroes(id)
 			);
@@ -59,7 +60,7 @@ public class DataLoader {
 	private static void			loadArtifacts(Hero hero) throws SQLException
 	{
 		connectDb();
-		PreparedStatement statement = DB_CONN.prepareStatement("SELECT * FROM artifacts WHERE id = ?;");
+		PreparedStatement statement = DB_CONN.prepareStatement("SELECT * FROM artifacts WHERE heroId = ?;");
 		statement.setInt(1, hero.getId());
 		
 		ResultSet query = statement.executeQuery();
@@ -69,7 +70,7 @@ public class DataLoader {
 				Class<?> cls = Class.forName("com.swingy.app.Artifacts." + query.getString("type"));
 				if (cls == Artifact.class || !Artifact.class.isAssignableFrom(cls))
 					throw new ClassNotFoundException(query.getString("type"));
-				Artifact artifact = (Artifact) cls.getDeclaredConstructor().newInstance();
+				Artifact artifact = (Artifact) cls.getDeclaredConstructor(int.class).newInstance(query.getInt("level"));
 				artifact.setId(query.getInt("id"));
 				hero.addArtifact(artifact);
 			} catch (ClassNotFoundException
@@ -167,6 +168,7 @@ public class DataLoader {
 			updateStmt.setLong(2, hero.getXp());
 			updateStmt.setInt(3, hero.getPosition().x);
 			updateStmt.setInt(4, hero.getPosition().y);
+			updateStmt.setInt(5, hero.getId());
 			updateStmt.execute();
 		}
 	}
@@ -174,7 +176,16 @@ public class DataLoader {
 	public static void	addArtifact(Hero hero, Artifact artifact) throws SQLException
 	{
 		connectDb();
-		// todo
+		PreparedStatement addStmt = DB_CONN.prepareStatement("""
+			INSERT INTO artifacts
+				(heroId, type, level)
+				VALUES
+				(?, ?, ?)
+			""");
+		addStmt.setInt(1, hero.getId());
+		addStmt.setString(2, artifact.getClass().getSimpleName());
+		addStmt.setInt(3, artifact.getLevel());
+		addStmt.execute();
 	}
 
 	public static void	removeArtifact(Hero hero, Artifact artifact) throws SQLException

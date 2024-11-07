@@ -23,7 +23,7 @@ public class Map {
 		generateMonsters();
 	}
 
-	private double	getLineDist(int posMin, int posMax, int pos) {
+	private double	getLineDistRatio(int posMin, int posMax, int pos) {
 		if (pos < 0)
 			return ((double) -pos) / ((double) -posMin);
 		else
@@ -40,30 +40,28 @@ public class Map {
 
 		// todo maybe parralelize this loop
 		for (int y = posMin; y < posMax; y++) {
-			double distY = getLineDist(posMin, posMax, y);
+			double distRatioY = getLineDistRatio(posMin, posMax, y);
 
 			for (int x = posMin; x < posMax; x++) {
 				if ((x == 0 && y == 0) 
 					|| (x == _hero.getPosition().x && y == _hero.getPosition().y))
 					continue;
 
-				double dist = Math.max(distY, getLineDist(posMin, posMax, x)); // not opti
+				double distRatio = Math.max(distRatioY, getLineDistRatio(posMin, posMax, x)); // not opti
 
-				double spawnPossibility = 0.2 + (0.5 * dist); // 20% if in the middle, 70% at bordure
+				double spawnPossibility = 0.2 + (0.5 * distRatio); // 20% if in the middle, 70% at bordure
 				if (random.nextDouble() <= spawnPossibility)
-					generateMonster(new Vector2(x, y), dist);
+					generateMonster(new Vector2(x, y), Math.max(Math.abs(x), Math.abs(y)), distRatio);
 			}
 		}
 	}
 
-	private void	generateMonster(Vector2 position, double dist) {
-		int level = (int) (50.0 * dist); // 1 if in the middle, 55 + 35-45% of player level
-		double additionalLevel = (0.45 * dist) + ((new Random().nextDouble()) * 0.1) - 0.1;
+	private void	generateMonster(Vector2 position, int dist, double distRatio) {
+		int level = (int) (dist); // 1 if in the middle, 55 + 35-45% of player level
+		
+		double additionalLevel = (0.45 * distRatio) + ((new Random().nextDouble()) * 0.1) - 0.1;
 		if (additionalLevel > 0)
 			level += (int) additionalLevel;
-		
-		if (level == 0)
-			level++;
 
 		Monster monster = new Monster(level, position);
 		_monsters.put(position, monster);
